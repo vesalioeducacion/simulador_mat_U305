@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATEMÁTICA - Intersecciones, Monotonía, Extremos y Modelado (UCCuyo)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for ultra-fast LaTeX formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f7f9f6;
+        }
+        /* Paleta Institucional Verde Oliva UCCuyo */
+        .text-accent { color: #436600; }
+        .bg-accent { background-color: #436600; }
+        .bg-accent-hover:hover { background-color: #324d00; }
+        .bg-accent-light { background-color: #f1f6eb; }
+        .border-accent { border-color: #436600; }
+
+        .text-primary { color: #436600; }
+        .bg-primary { background-color: #436600; }
+        .bg-primary-dark { background-color: #324d00; }
+        .border-primary { border-color: #436600; }
+        
+        .focus-accent:focus {
+            border-color: #436600;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 102, 0, 0.2);
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        canvas {
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- Cabecera Institucional UCCuyo -->
+    <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    M
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-800 tracking-wide uppercase">MATEMÁTICA APLICADA</h1>
+                    <p class="text-xs text-gray-500 font-semibold">PreMédico (Facultad de Cs. Médicas - UCCuyo)</p>
+                </div>
+            </div>
+            <!-- Botón Guía de Uso -->
+            <button onclick="openTutorial()" class="flex items-center gap-1.5 px-3 py-1.5 bg-accent text-white text-xs font-semibold rounded-lg shadow-sm hover:opacity-90 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Guía de Uso
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal con Menú Lateral -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Menú de Navegación Lateral -->
+        <nav class="w-full lg:w-64 flex flex-row lg:flex-col gap-2 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 overflow-x-auto lg:overflow-x-visible whitespace-nowrap lg:whitespace-normal sticky top-20 h-fit">
+            <button onclick="switchModule(1)" id="nav-mod-1" class="bg-accent text-white flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-semibold transition shadow-sm">
+                1. Intersección con Ejes
+            </button>
+            <button onclick="switchModule(2)" id="nav-mod-2" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                2. Monotonía
+            </button>
+            <button onclick="switchModule(3)" id="nav-mod-3" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                3. Puntos Extremos
+            </button>
+            <button onclick="switchModule(4)" id="nav-mod-4" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                4. Modelado Biológico
+            </button>
+        </nav>
+
+        <!-- Área de Módulos Interactivos -->
+        <div class="flex-1 space-y-6">
+
+            <!-- ================= MODULE 1: INTERSECCIÓN CON EJES COORDENADOS ================= -->
+            <section id="module-1" class="space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-accent font-semibold text-xs mb-1">
+                            <i class="fa-solid fa-crosshairs"></i><span>Unidad 3: Puntos Notables del Plano</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Intersección con los Ejes Coordenados</h2>
+                        <p class="text-xs text-gray-500 mt-1 max-w-3xl leading-relaxed">
+                            Cálculo analítico y geométrico de los ceros o raíces ($f(x) = 0$, cortes con el eje horizontal de abscisas) y de la ordenada al origen ($f(0) = y$, corte con el eje vertical).
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 rounded-xl">
+                        <button onclick="Module1.selectPreset(1)" id="btn-m1-p1" class="py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition">x² + 4x - 5</button>
+                        <button onclick="Module1.selectPreset(2)" id="btn-m1-p2" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">-x² + 6x - 8</button>
+                        <button onclick="Module1.selectPreset(3)" id="btn-m1-p3" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">x² - 4</button>
+                    </div>
+                </div>
+
+                <!-- Grid Módulo 1 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Controles y Análisis Analítico (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col space-y-4">
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-accent border-b pb-2 flex justify-between items-center">
+                                <span>Ecuación Cuadrática General</span>
+                                <span class="text-[11px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold">f(x) = ax² + bx + c</span>
+                            </h3>
+
+                            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                                <div id="m1-formula" class="text-sm font-semibold text-gray-800">$$m(x) = x^2 + 4x - 5$$</div>
+                            </div>
+
+                            <!-- Deslizadores de Coeficientes a, b, c -->
+                            <div class="space-y-3">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                        <span>Coeficiente cuadrático ($a \neq 0$):</span>
+                                        <span class="text-accent code-font"><span id="val-m1-a">1.0</span></span>
+                                    </div>
+                                    <input type="range" id="slider-m1-a" min="-2" max="2" step="0.5" value="1" oninput="Module1.updateParam('a', this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#436600]">
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                        <span>Coeficiente lineal ($b$):</span>
+                                        <span class="text-accent code-font"><span id="val-m1-b">4.0</span></span>
+                                    </div>
+                                    <input type="range" id="slider-m1-b" min="-6" max="6" step="1" value="4" oninput="Module1.updateParam('b', this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#436600]">
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                        <span>Término independiente ($c$, Ordenada al origen):</span>
+                                        <span class="text-accent code-font"><span id="val-m1-c">-5.0</span></span>
+                                    </div>
+                                    <input type="range" id="slider-m1-c" min="-10" max="10" step="1" value="-5" oninput="Module1.updateParam('c', this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#436600]">
+                                </div>
+                            </div>
+
+                            <!-- Diagnóstico de Ceros y Ordenada -->
+                            <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-2 text-xs text-gray-700">
+                                <div>
+                                    <span class="font-bold text-gray-800 block mb-0.5">1. Ceros / Raíces en el Eje x ($f(x) = 0$):</span>
+                                    <div id="m1-roots-calc" class="text-[11px] font-mono text-gray-600">Discriminante: Δ = 36.00 > 0</div>
+                                    <div id="m1-roots-points" class="font-bold text-rose-600 font-mono mt-0.5">Puntos: (-5.00, 0) y (1.00, 0)</div>
+                                </div>
+                                <div class="border-t border-gray-200 pt-1.5">
+                                    <span class="font-bold text-gray-800 block mb-0.5">2. Ordenada al Origen ($f(0) = c$):</span>
+                                    <div id="m1-yint-point" class="font-bold text-emerald-700 font-mono">Punto: (0, -5.00)</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-blue-50/70 border border-blue-100 rounded-xl text-xs text-blue-900 space-y-1">
+                                <span class="font-bold flex items-center gap-1 text-blue-800">
+                                    <i class="fa-solid fa-notes-medical"></i> Correlación en Diagnóstico Médico:
+                                </span>
+                                <p class="text-[11px] leading-relaxed text-blue-800/90">
+                                    Las raíces representan umbrales críticos donde una sustancia farmacológica se depura por completo ($C(t) = 0$) o la presión transmural se equilibra con la presión atmosférica. La ordenada al origen $f(0)$ representa el valor basal del paciente previo al tratamiento.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico Canvas Graduado (7 cols) -->
+                    <div class="lg:col-span-7 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-700">Plano Cartesiano Graduado</span>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Parábola $f(x)$</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span> Ceros $(x_i, 0)$</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Ordenada $(0, y)$</span>
+                            </div>
+                        </div>
+
+                        <div class="relative bg-slate-900 rounded-xl overflow-hidden h-[340px] shadow-inner flex items-center justify-center">
+                            <canvas id="canvas-m1" width="500" height="340" class="w-full h-full"></canvas>
+                        </div>
+
+                        <div class="text-[11px] text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 flex justify-between font-mono">
+                            <span id="m1-discriminant-status">Discriminante: Δ = 36.00 (Dos raíces reales distintas)</span>
+                            <span>Vértice: <strong id="m1-vertex-status" class="text-gray-700">V = (-2.00, -9.00)</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 2: MONOTONÍA ================= -->
+            <section id="module-2" class="space-y-6 hidden">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-accent font-semibold text-xs mb-1">
+                            <i class="fa-solid fa-arrow-trend-up"></i><span>Unidad 3: Variación y Criterio de Desigualdad</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Monotonía (Crecimiento, Decrecimiento y Constancia)</h2>
+                        <p class="text-xs text-gray-500 mt-1 max-w-3xl leading-relaxed">
+                            Verificación rigurosa de las condiciones formales: $x_1 < x_2 \implies f(x_1) < f(x_2)$ (creciente), $f(x_1) > f(x_2)$ (decreciente) o $f(x_1) = f(x_2)$ (constante). Mueva los cursores de prueba en el dominio para comprobar las desigualdades.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 rounded-xl">
+                        <button onclick="Module2.selectModel('cubic1')" id="btn-m2-c1" class="py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition">x³ - 3x</button>
+                        <button onclick="Module2.selectModel('cubic2')" id="btn-m2-c2" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">-x³ + 3x²</button>
+                        <button onclick="Module2.selectModel('constant')" id="btn-m2-c3" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">Con Tramo Constante</button>
+                    </div>
+                </div>
+
+                <!-- Grid Módulo 2 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Controles y Prueba de Desigualdades (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col space-y-4">
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-accent border-b pb-2 flex justify-between items-center">
+                                <span>Verificador Dinámico de Monotonía</span>
+                            </h3>
+
+                            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                                <div id="m2-formula" class="text-sm font-semibold text-gray-800">$$f(x) = x^3 - 3x$$</div>
+                            </div>
+
+                            <!-- Deslizadores de Puntos de Prueba x1 y x2 -->
+                            <div class="space-y-3">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                        <span>Primer valor de prueba ($x_1$):</span>
+                                        <span class="text-blue-600 code-font"><span id="val-m2-x1">-1.50</span></span>
+                                    </div>
+                                    <input type="range" id="slider-m2-x1" min="-3" max="2.5" step="0.1" value="-1.5" oninput="Module2.updatePoints('x1', this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                        <span>Segundo valor de prueba ($x_2 > x_1$):</span>
+                                        <span class="text-purple-600 code-font"><span id="val-m2-x2">-0.50</span></span>
+                                    </div>
+                                    <input type="range" id="slider-m2-x2" min="-2.5" max="3" step="0.1" value="-0.5" oninput="Module2.updatePoints('x2', this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                                </div>
+                            </div>
+
+                            <!-- Diagnóstico de Desigualdad Formal -->
+                            <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-2 text-xs text-gray-700">
+                                <div class="flex justify-between items-center font-mono">
+                                    <span>f(x₁) = <strong id="m2-fx1" class="text-blue-600">1.125</strong></span>
+                                    <span>f(x₂) = <strong id="m2-fx2" class="text-purple-600">1.375</strong></span>
+                                </div>
+                                <div class="border-t border-gray-200 pt-2 text-center">
+                                    <div class="text-[11px] uppercase font-bold text-gray-500 mb-0.5">Diagnóstico del Intervalo [x₁, x₂]:</div>
+                                    <div id="m2-diag-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                                        Estrictamente Creciente: f(x₁) < f(x₂)
+                                    </div>
+                                </div>
+                                <div id="m2-global-intervals" class="text-[11px] text-gray-600 bg-white p-2 rounded-lg border border-gray-200 space-y-0.5 font-medium">
+                                    <div>• Creciente en: (-∞, -1) ∪ (1, +∞)</div>
+                                    <div>• Decreciente en: (-1, 1)</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl text-xs text-emerald-950 space-y-1">
+                                <span class="font-bold flex items-center gap-1 text-emerald-800">
+                                    <i class="fa-solid fa-heart-pulse"></i> Relevancia Fisiológica:
+                                </span>
+                                <p class="text-[11px] leading-relaxed text-emerald-900/90">
+                                    Monitorear la monotonía de la concentración plasmática permite identificar con certeza la fase de absorción (creciente, tasa de entrada positiva), la fase de meseta estacionaria (constante, equilibrio) y la fase de aclaramiento renal o hepático (decreciente).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Graduado Módulo 2 (7 cols) -->
+                    <div class="lg:col-span-7 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-700">Trazado con Monotonía Coloreada</span>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Creciente</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Decreciente</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Constante</span>
+                            </div>
+                        </div>
+
+                        <div class="relative bg-slate-900 rounded-xl overflow-hidden h-[340px] shadow-inner flex items-center justify-center">
+                            <canvas id="canvas-m2" width="500" height="340" class="w-full h-full"></canvas>
+                        </div>
+
+                        <div class="text-[11px] text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 flex justify-between font-mono">
+                            <span>Puntos evaluados: <strong class="text-blue-400">x₁</strong> y <strong class="text-purple-400">x₂</strong></span>
+                            <span>Graduación: Escala métrica con marcas cada 1 unidad</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 3: PUNTOS EXTREMOS ================= -->
+            <section id="module-3" class="space-y-6 hidden">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-accent font-semibold text-xs mb-1">
+                            <i class="fa-solid fa-mountain"></i><span>Unidad 3: Optimización y Puntos Críticos</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Puntos Extremos (Máximos y Mínimos)</h2>
+                        <p class="text-xs text-gray-500 mt-1 max-w-3xl leading-relaxed">
+                            Identificación de cimas (máximos relativos) y valles (mínimos relativos), comparando su alcance en un entorno local $I$ frente a los extremos absolutos de todo el dominio.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 bg-gray-100 p-1 rounded-xl">
+                        <button onclick="Module3.selectModel(1)" id="btn-m3-m1" class="py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition">x³ - 3x² + 2</button>
+                        <button onclick="Module3.selectModel(2)" id="btn-m3-m2" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">x⁴ - 2x²</button>
+                        <button onclick="Module3.selectModel(3)" id="btn-m3-m3" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">-x² + 4x + 1</button>
+                    </div>
+                </div>
+
+                <!-- Grid Módulo 3 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Controles y Entorno de Análisis (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col space-y-4">
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-accent border-b pb-2 flex justify-between items-center">
+                                <span>Clasificación de Extremos Locales y Absolutos</span>
+                            </h3>
+
+                            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                                <div id="m3-formula" class="text-sm font-semibold text-gray-800">$$f(x) = x^3 - 3x^2 + 2$$</div>
+                            </div>
+
+                            <!-- Explorador de Entorno de Vecindad -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                    <span>Centro del Entorno de Análisis ($x_c$):</span>
+                                    <span class="text-accent code-font"><span id="val-m3-xc">0.00</span></span>
+                                </div>
+                                <input type="range" id="slider-m3-xc" min="-2" max="3" step="0.2" value="0" oninput="Module3.updateCenter(this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#436600]">
+                            </div>
+
+                            <!-- Diagnóstico de Extremos -->
+                            <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-2 text-xs text-gray-700">
+                                <div id="m3-extrema-list" class="space-y-1.5">
+                                    <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50 border border-amber-200">
+                                        <span class="font-bold text-amber-800">Máximo Relativo (Local):</span>
+                                        <span class="font-mono font-bold text-amber-900">(0.00, 2.00)</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200">
+                                        <span class="font-bold text-emerald-800">Mínimo Relativo (Local):</span>
+                                        <span class="font-mono font-bold text-emerald-900">(2.00, -2.00)</span>
+                                    </div>
+                                </div>
+                                <div id="m3-abs-explanation" class="text-[11px] text-gray-600 pt-1 border-t border-gray-200">
+                                    No posee extremos absolutos globales en $\mathbb{R}$ pues $\lim_{x \to \pm\infty} f(x) = \pm\infty$.
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-amber-50/70 border border-amber-100 rounded-xl text-xs text-amber-950 space-y-1">
+                                <span class="font-bold flex items-center gap-1 text-amber-800">
+                                    <i class="fa-solid fa-capsules"></i> Farmacología y Toxicología:
+                                </span>
+                                <p class="text-[11px] leading-relaxed text-amber-900/90">
+                                    La concentración plasmática máxima ($C_{\max}$) es el extremo crítico absoluto que debe mantenerse por debajo de la concentración mínima tóxica (CMT) y por encima de la concentración mínima eficaz (CME) para garantizar una ventana terapéutica segura.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Graduado Módulo 3 (7 cols) -->
+                    <div class="lg:col-span-7 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-700">Gráfico de Puntos Extremos</span>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Máximo</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Mínimo</span>
+                            </div>
+                        </div>
+
+                        <div class="relative bg-slate-900 rounded-xl overflow-hidden h-[340px] shadow-inner flex items-center justify-center">
+                            <canvas id="canvas-m3" width="500" height="340" class="w-full h-full"></canvas>
+                        </div>
+
+                        <div class="text-[11px] text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 flex justify-center font-mono">
+                            <span>Entorno móvil sombreado en color cian suave</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 4: MODELADO DE SITUACIONES PROBLEMÁTICAS ================= -->
+            <section id="module-4" class="space-y-6 hidden">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center space-x-2 text-accent font-semibold text-xs mb-1">
+                            <i class="fa-solid fa-hospital-user"></i><span>Unidad 3: Aplicaciones Biomédicas Reales</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Modelado de Situaciones Problemáticas en Salud</h2>
+                        <p class="text-xs text-gray-500 mt-1 max-w-3xl leading-relaxed">
+                            Simulación interactiva basada en casos empíricos de la práctica clínica: ritmo circadiano de presión arterial sistólica a lo largo del día y cinemática de traslado de urgencia hacia un centro de alta complejidad.
+                        </p>
+                    </div>
+                    <div class="flex gap-1.5 bg-gray-100 p-1 rounded-xl">
+                        <button onclick="Module4.setCase(1)" id="btn-m4-c1" class="py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition">1. Presión Arterial P(t)</button>
+                        <button onclick="Module4.setCase(2)" id="btn-m4-c2" class="py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition">2. Traslado Sanitario D(t)</button>
+                    </div>
+                </div>
+
+                <!-- Grid Módulo 4 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Controles y Evaluación Clínica (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col space-y-4">
+                        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-accent border-b pb-2 flex justify-between items-center">
+                                <span id="m4-case-title">Ciclo Circadiano de Presión Arterial</span>
+                                <span id="m4-unit-badge" class="text-[11px] bg-purple-50 text-purple-800 px-2 py-0.5 rounded font-mono font-bold">mmHg vs Horas</span>
+                            </h3>
+
+                            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                                <div id="m4-formula" class="text-sm font-semibold text-gray-800">$$P(t) = 120 + 25\sin\left(\frac{\pi(t - 6)}{12}\right)$$</div>
+                            </div>
+
+                            <!-- Cursor Temporal Interactivo -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold text-gray-700">
+                                    <span id="m4-time-label">Instante de Tiempo Evaluado (t en horas):</span>
+                                    <span class="text-accent code-font"><span id="val-m4-t">12.0</span> h</span>
+                                </div>
+                                <input type="range" id="slider-m4-t" min="0" max="24" step="0.5" value="12" oninput="Module4.updateTime(this.value)" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#436600]">
+                                <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+                                    <span id="m4-t-min">00:00 (Medianoche)</span>
+                                    <span id="m4-t-mid">12:00 (Mediodía)</span>
+                                    <span id="m4-t-max">24:00 (Ciclo 24h)</span>
+                                </div>
+                            </div>
+
+                            <!-- Diagnóstico Fisiológico / Cinemático -->
+                            <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-2 text-xs text-gray-700">
+                                <div class="flex justify-between items-center font-mono">
+                                    <span id="m4-var-name">Presión Sistólica en t:</span>
+                                    <span id="m4-var-val" class="text-sm font-bold text-accent">145.0 mmHg</span>
+                                </div>
+                                <div id="m4-clinical-status" class="p-2 rounded-lg bg-amber-50 text-amber-800 font-semibold text-[11px]">
+                                    Pico Sistólico Diurno: Hipertensión transitoria de esfuerzo.
+                                </div>
+                                <div id="m4-features" class="space-y-0.5 text-[11px] text-gray-600 border-t border-gray-200 pt-1.5">
+                                    <div>• Valor Máximo: 145.0 mmHg (en t = 12 h)</div>
+                                    <div>• Valor Mínimo (Nadir): 95.0 mmHg (en t = 0 h / 24 h)</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-purple-50/70 border border-purple-100 rounded-xl text-xs text-purple-950 space-y-1">
+                                <span class="font-bold flex items-center gap-1 text-purple-800">
+                                    <i class="fa-solid fa-stethoscope"></i> Interpretación Clínica Integral:
+                                </span>
+                                <p id="m4-footer-text" class="text-[11px] leading-relaxed text-purple-900/90">
+                                    El ritmo circadiano de la presión arterial exhibe un patrón normal conocido como "dipper" (caída nocturna). La pérdida de este valle nocturno es un biomarcador de alto riesgo de evento cardiovascular.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Graduado Módulo 4 (7 cols) -->
+                    <div class="lg:col-span-7 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span id="m4-graph-title" class="text-xs font-bold uppercase tracking-wider text-gray-700">Curva de Presión Arterial Sistólica vs Tiempo (24h)</span>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Trayectoria</span>
+                                <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-accent"></span> Estado en $t_0$</span>
+                            </div>
+                        </div>
+
+                        <div class="relative bg-slate-900 rounded-xl overflow-hidden h-[340px] shadow-inner flex items-center justify-center">
+                            <canvas id="canvas-m4" width="500" height="340" class="w-full h-full"></canvas>
+                        </div>
+
+                        <div class="text-[11px] text-gray-500 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 flex justify-between font-mono">
+                            <span id="m4-footer-status">Eje x: Tiempo (h) | Eje y: Presión Sistólica (mmHg)</span>
+                            <span>Graduación calibrada en unidades médicas reales</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal Tutorial / Guía de Uso -->
+    <div id="tutorial-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-accent"></span>
+                    <h3 class="text-base font-bold text-gray-800 uppercase tracking-wide">Guía de Uso del Simulador</h3>
+                </div>
+                <button onclick="closeTutorial()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            </div>
+            
+            <div class="space-y-4 text-xs text-gray-600 leading-relaxed">
+                <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                    <span class="font-bold text-gray-800 text-xs block mb-1">Propósito Pedagógico (Curso de Ingreso a Medicina - UCCuyo):</span>
+                    Este simulador interactivo entrena al estudiante en el análisis de puntos notables, tasas de cambio y modelado cuantitativo: ceros de funciones como umbrales de eliminación, monotonía para seguir la cinética farmacológica, extremos relativos/absolutos para identificar dosis pico y modelos biológicos reales de presión arterial y cinemática de urgencias.
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">1. Módulo 1: Intersecciones con los Ejes Coordenados</h4>
+                    <ul class="list-disc list-inside space-y-1.5 ml-1 text-gray-600">
+                        <li><strong>Ceros o Raíces en Eje x:</strong> Al resolver la ecuación cuadrática $f(x) = 0$, el discriminante ($\Delta = b^2 - 4ac$) condiciona la existencia de dos raíces reales distintas ($\Delta > 0$), una raíz doble ($\Delta = 0$) o ninguna raíz real ($\Delta < 0$, parábola que no cruza el eje horizontal).</li>
+                        <li><strong>Ordenada al Origen en Eje y:</strong> Coincide con la evaluación en $x = 0$ ($f(0) = c$). Representa el estado inicial o basal previo al inicio de una intervención clínica.</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">2. Módulo 2: Monotonía (Crecimiento, Decrecimiento y Constancia)</h4>
+                    <ul class="list-disc list-inside space-y-1.5 ml-1 text-gray-600">
+                        <li><strong>Criterio de Desigualdad Formal:</strong> Arrastre los cursores de prueba $x_1$ y $x_2$ asegurando $x_1 < x_2$. Compruebe cómo la relación entre sus imágenes clasifica el tramo: creciente si $f(x_1) < f(x_2)$, decreciente si $f(x_1) > f(x_2)$ y constante si $f(x_1) = f(x_2)$.</li>
+                        <li><strong>Coloreado de Pendiente:</strong> Las ramas se colorean en tiempo real: verde para tramos crecientes, rojo para decrecientes y ámbar para tramos de reposo constante.</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">3. Módulo 3: Puntos Extremos (Máximos y Mínimos)</h4>
+                    <ul class="list-disc list-inside space-y-1.5 ml-1 text-gray-600">
+                        <li><strong>Extremos Locales vs. Absolutos:</strong> Un máximo relativo es una cima en un entorno abierto $I = (x_c - \delta, x_c + \delta)$ con recta tangente horizontal $m = 0$. Compare si dicha cima es superada en otras regiones del dominio para determinar si califica además como extremo absoluto.</li>
+                        <li><strong>Ventana Terapéutica:</strong> Fundamental para monitorear la concentración máxima ($C_{\max}$) y el valle previo a la siguiente dosis ($C_{\min}$) en tratamientos antimicrobianos.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">4. Módulo 4: Modelado de Situaciones Problemáticas</h4>
+                    <ul class="list-disc list-inside space-y-1.5 ml-1 text-gray-600">
+                        <li><strong>Presión Arterial Circadiana $P(t)$:</strong> Examine las variaciones de la presión sistólica (mmHg) a lo largo del día. Desplace el control horario de $0$ a $24$ horas para ubicar el pico diurno y el nadir nocturno de relajación fisiológica.</li>
+                        <li><strong>Distancia de Ambulancia $D(t)$:</strong> Analice la aproximación de un móvil de emergencias hacia el hospital ($D(t)$ en km). Determine el tiempo de llegada al destino cuando la distancia restante se anula ($D(t) = 0$).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t flex justify-end">
+                <button onclick="closeTutorial()" class="px-5 py-2 bg-accent text-white text-xs font-semibold rounded-xl hover:bg-accent-hover transition shadow-sm">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de Página Institucional -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-8 text-center text-xs text-gray-500">
+        Desarrollado por vesalio - Todos los derechos reservados
+    </footer>
+
+    <script>
+        // Modal Tutorial
+        function openTutorial() {
+            document.getElementById('tutorial-modal').classList.remove('hidden');
+            renderKaTeX();
+        }
+        function closeTutorial() {
+            document.getElementById('tutorial-modal').classList.add('hidden');
+        }
+
+        // Renderizado KaTeX Seguro
+        function renderKaTeX() {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // Navegación entre Módulos
+        let currentModule = 1;
+        function switchModule(modNum) {
+            currentModule = modNum;
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`module-${i}`);
+                const btn = document.getElementById(`nav-mod-${i}`);
+                if (i === modNum) {
+                    sec.classList.remove('hidden');
+                    btn.className = "bg-accent text-white flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-semibold transition shadow-sm";
+                } else {
+                    sec.classList.add('hidden');
+                    btn.className = "text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition";
+                }
+            }
+
+            if (modNum === 1) Module1.resizeAndDraw();
+            if (modNum === 2) Module2.resizeAndDraw();
+            if (modNum === 3) Module3.resizeAndDraw();
+            if (modNum === 4) Module4.resizeAndDraw();
+
+            renderKaTeX();
+        }
+
+        // ================= MOTOR DE GRADUACIÓN DE EJES =================
+        function drawAxesAndGrid(ctx, w, h, xMin, xMax, yMin, yMax, options = {}) {
+            const toScreenX = (x) => ((x - xMin) / (xMax - xMin)) * w;
+            const toScreenY = (y) => h - ((y - yMin) / (yMax - yMin)) * h;
+
+            // 1. Cuadrícula
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+
+            const stepX = options.stepX || 1;
+            const stepY = options.stepY || 1;
+
+            for (let x = Math.ceil(xMin / stepX) * stepX; x <= Math.floor(xMax / stepX) * stepX; x += stepX) {
+                const sx = toScreenX(x);
+                ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, h); ctx.stroke();
+            }
+            for (let y = Math.ceil(yMin / stepY) * stepY; y <= Math.floor(yMax / stepY) * stepY; y += stepY) {
+                const sy = toScreenY(y);
+                ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(w, sy); ctx.stroke();
+            }
+
+            // 2. Ejes principales
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 1.5;
+            const originX = toScreenX(0);
+            const originY = toScreenY(0);
+
+            if (originY >= 0 && originY <= h) {
+                ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+            }
+            if (originX >= 0 && originX <= w) {
+                ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+            }
+
+            // 3. Graduación y Números (Ticks)
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            const tickLen = 3;
+            const safeY = Math.min(Math.max(originY, 15), h - 20);
+            const safeX = Math.min(Math.max(originX, 25), w - 20);
+
+            for (let x = Math.ceil(xMin / stepX) * stepX; x <= Math.floor(xMax / stepX) * stepX; x += stepX) {
+                if (Math.abs(x) < 0.001) continue;
+                const sx = toScreenX(x);
+                ctx.beginPath();
+                ctx.strokeStyle = '#64748b';
+                ctx.moveTo(sx, safeY - tickLen);
+                ctx.lineTo(sx, safeY + tickLen);
+                ctx.stroke();
+
+                let label = options.formatX ? options.formatX(x) : x.toString();
+                ctx.fillText(label, sx, safeY + 4);
+            }
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let y = Math.ceil(yMin / stepY) * stepY; y <= Math.floor(yMax / stepY) * stepY; y += stepY) {
+                if (Math.abs(y) < 0.001) continue;
+                const sy = toScreenY(y);
+                ctx.beginPath();
+                ctx.strokeStyle = '#64748b';
+                ctx.moveTo(safeX - tickLen, sy);
+                ctx.lineTo(safeX + tickLen, sy);
+                ctx.stroke();
+
+                let label = options.formatY ? options.formatY(y) : y.toString();
+                ctx.fillText(label, safeX - 5, sy);
+            }
+
+            if (originX >= 0 && originX <= w && originY >= 0 && originY <= h) {
+                ctx.fillText('0', safeX - 4, safeY + 10);
+            }
+
+            return { toScreenX, toScreenY, originX, originY };
+        }
+
+        // ================= MÓDULO 1: INTERSECCIÓN CON EJES =================
+        const Module1 = {
+            canvas: null,
+            ctx: null,
+            a: 1.0,
+            b: 4.0,
+            c: -5.0,
+            init() {
+                this.canvas = document.getElementById('canvas-m1');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            },
+            resizeCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * (window.devicePixelRatio || 1);
+                this.canvas.height = rect.height * (window.devicePixelRatio || 1);
+                this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+                this.draw();
+            },
+            resizeAndDraw() { this.resizeCanvas(); },
+            selectPreset(p) {
+                for (let i = 1; i <= 3; i++) {
+                    const btn = document.getElementById(`btn-m1-p${i}`);
+                    btn.className = i === p ? "py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition" : "py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition";
+                }
+                if (p === 1) { this.a = 1; this.b = 4; this.c = -5; }
+                else if (p === 2) { this.a = -1; this.b = 6; this.c = -8; }
+                else { this.a = 1; this.b = 0; this.c = -4; }
+
+                document.getElementById('slider-m1-a').value = this.a;
+                document.getElementById('slider-m1-b').value = this.b;
+                document.getElementById('slider-m1-c').value = this.c;
+                document.getElementById('val-m1-a').innerText = this.a.toFixed(1);
+                document.getElementById('val-m1-b').innerText = this.b.toFixed(1);
+                document.getElementById('val-m1-c').innerText = this.c.toFixed(1);
+
+                this.updateFormula();
+                this.draw();
+            },
+            updateParam(param, val) {
+                if (param === 'a') {
+                    this.a = parseFloat(val);
+                    if (this.a === 0) this.a = 0.5; // Evita división por cero
+                    document.getElementById('val-m1-a').innerText = this.a.toFixed(1);
+                } else if (param === 'b') {
+                    this.b = parseFloat(val);
+                    document.getElementById('val-m1-b').innerText = this.b.toFixed(1);
+                } else if (param === 'c') {
+                    this.c = parseFloat(val);
+                    document.getElementById('val-m1-c').innerText = this.c.toFixed(1);
+                }
+                this.updateFormula();
+                this.draw();
+            },
+            updateFormula() {
+                const aStr = this.a === 1 ? "x^2" : (this.a === -1 ? "-x^2" : `${this.a}x^2`);
+                const bStr = this.b === 0 ? "" : (this.b > 0 ? ` + ${this.b === 1 ? "" : this.b}x` : ` - ${Math.abs(this.b) === 1 ? "" : Math.abs(this.b)}x`);
+                const cStr = this.c === 0 ? "" : (this.c > 0 ? ` + ${this.c}` : ` - ${Math.abs(this.c)}`);
+                document.getElementById('m1-formula').innerHTML = `$$m(x) = ${aStr}${bStr}${cStr}$$`;
+
+                const disc = this.b * this.b - 4 * this.a * this.c;
+                const discStat = document.getElementById('m1-discriminant-status');
+                const rootsCalc = document.getElementById('m1-roots-calc');
+                const rootsPoints = document.getElementById('m1-roots-points');
+                const yintPoint = document.getElementById('m1-yint-point');
+                const vertexStatus = document.getElementById('m1-vertex-status');
+
+                // Vértice
+                const vx = -this.b / (2 * this.a);
+                const vy = this.a * vx * vx + this.b * vx + this.c;
+                vertexStatus.innerText = `V = (${vx.toFixed(2)}, ${vy.toFixed(2)})`;
+
+                // Ordenada
+                yintPoint.innerText = `Punto: (0, ${this.c.toFixed(2)})`;
+
+                if (disc > 0.0001) {
+                    const x1 = (-this.b - Math.sqrt(disc)) / (2 * this.a);
+                    const x2 = (-this.b + Math.sqrt(disc)) / (2 * this.a);
+                    discStat.innerText = `Discriminante: Δ = ${disc.toFixed(2)} (Dos raíces reales distintas)`;
+                    rootsCalc.innerHTML = `Discriminante: $\\Delta = ${disc.toFixed(2)} > 0$`;
+                    rootsPoints.innerText = `Puntos: (${Math.min(x1, x2).toFixed(2)}, 0) y (${Math.max(x1, x2).toFixed(2)}, 0)`;
+                } else if (Math.abs(disc) <= 0.0001) {
+                    const x0 = -this.b / (2 * this.a);
+                    discStat.innerText = `Discriminante: Δ = 0.00 (Raíz doble en el vértice)`;
+                    rootsCalc.innerHTML = `Discriminante: $\\Delta = 0$`;
+                    rootsPoints.innerText = `Punto único tangencial: (${x0.toFixed(2)}, 0)`;
+                } else {
+                    discStat.innerText = `Discriminante: Δ = ${disc.toFixed(2)} (Sin raíces reales, no corta eje x)`;
+                    rootsCalc.innerHTML = `Discriminante: $\\Delta = ${disc.toFixed(2)} < 0$`;
+                    rootsPoints.innerText = `Sin intersección con el eje x (Corte vacío ∅)`;
+                }
+                renderKaTeX();
+            },
+            draw() {
+                if (!this.ctx) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                this.ctx.clearRect(0, 0, w, h);
+                this.ctx.fillStyle = '#0f172a';
+                this.ctx.fillRect(0, 0, w, h);
+
+                const xMin = -7, xMax = 7, yMin = -12, yMax = 12;
+                const { toScreenX, toScreenY } = drawAxesAndGrid(this.ctx, w, h, xMin, xMax, yMin, yMax, { stepX: 1, stepY: 2 });
+
+                // Trazar Parábola f(x)
+                this.ctx.strokeStyle = '#38bdf8';
+                this.ctx.lineWidth = 2.8;
+                this.ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= w; px += 2) {
+                    const x = xMin + (px / w) * (xMax - xMin);
+                    const y = this.a * x * x + this.b * x + this.c;
+                    if (isNaN(y) || y < yMin - 4 || y > yMax + 4) { first = true; continue; }
+                    const py = toScreenY(y);
+                    if (first) { this.ctx.moveTo(px, py); first = false; }
+                    else { this.ctx.lineTo(px, py); }
+                }
+                this.ctx.stroke();
+
+                // Dibujar Raíces si existen
+                const disc = this.b * this.b - 4 * this.a * this.c;
+                if (disc >= 0) {
+                    const x1 = (-this.b - Math.sqrt(disc)) / (2 * this.a);
+                    const x2 = (-this.b + Math.sqrt(disc)) / (2 * this.a);
+                    [x1, x2].forEach(rx => {
+                        if (rx >= xMin && rx <= xMax) {
+                            const sx = toScreenX(rx);
+                            const sy = toScreenY(0);
+                            this.ctx.fillStyle = '#f43f5e';
+                            this.ctx.beginPath();
+                            this.ctx.arc(sx, sy, 5.5, 0, 2 * Math.PI);
+                            this.ctx.fill();
+                            this.ctx.strokeStyle = '#ffffff';
+                            this.ctx.lineWidth = 1.5;
+                            this.ctx.stroke();
+                        }
+                    });
+                }
+
+                // Dibujar Ordenada al Origen (0, c)
+                if (this.c >= yMin && this.c <= yMax) {
+                    const sx0 = toScreenX(0);
+                    const sy0 = toScreenY(this.c);
+                    this.ctx.fillStyle = '#10b981';
+                    this.ctx.beginPath();
+                    this.ctx.arc(sx0, sy0, 5.5, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.stroke();
+                }
+            }
+        };
+
+        // ================= MÓDULO 2: MONOTONÍA =================
+        const Module2 = {
+            canvas: null,
+            ctx: null,
+            model: 'cubic1',
+            x1: -1.5,
+            x2: -0.5,
+            init() {
+                this.canvas = document.getElementById('canvas-m2');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            },
+            resizeCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * (window.devicePixelRatio || 1);
+                this.canvas.height = rect.height * (window.devicePixelRatio || 1);
+                this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+                this.draw();
+            },
+            resizeAndDraw() { this.resizeCanvas(); },
+            selectModel(m) {
+                this.model = m;
+                ['c1', 'c2', 'c3'].forEach(k => {
+                    document.getElementById(`btn-m2-${k}`).className = "py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition";
+                });
+                const activeId = m === 'cubic1' ? 'btn-m2-c1' : (m === 'cubic2' ? 'btn-m2-c2' : 'btn-m2-c3');
+                document.getElementById(activeId).className = "py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition";
+
+                const fEl = document.getElementById('m2-formula');
+                const gInt = document.getElementById('m2-global-intervals');
+
+                if (m === 'cubic1') {
+                    fEl.innerHTML = "$$f(x) = x^3 - 3x$$";
+                    gInt.innerHTML = "<div>• Creciente en: (-∞, -1) ∪ (1, +∞)</div><div>• Decreciente en: (-1, 1)</div>";
+                } else if (m === 'cubic2') {
+                    fEl.innerHTML = "$$f(x) = -x^3 + 3x^2$$";
+                    gInt.innerHTML = "<div>• Decreciente en: (-∞, 0) ∪ (2, +∞)</div><div>• Creciente en: (0, 2)</div>";
+                } else {
+                    fEl.innerHTML = "$$f(x) = \\begin{cases} x+2 & \\text{si } x < -1 \\\\ 1 & \\text{si } -1 \\le x \\le 1 \\\\ -x+2 & \\text{si } x > 1 \\end{cases}$$";
+                    gInt.innerHTML = "<div>• Creciente en: (-∞, -1)</div><div>• Constante en: (-1, 1)</div><div>• Decreciente en: (1, +∞)</div>";
+                }
+
+                this.updateDiagnostics();
+                renderKaTeX();
+                this.draw();
+            },
+            evalFn(x) {
+                if (this.model === 'cubic1') return x * x * x - 3 * x;
+                if (this.model === 'cubic2') return -x * x * x + 3 * x * x;
+                // Modelo mixto con tramo constante
+                if (x < -1) return x + 2;
+                if (x <= 1) return 1;
+                return -x + 2;
+            },
+            evalDeriv(x) {
+                if (this.model === 'cubic1') return 3 * x * x - 3;
+                if (this.model === 'cubic2') return -3 * x * x + 6 * x;
+                if (x < -1) return 1;
+                if (x <= 1) return 0;
+                return -1;
+            },
+            updatePoints(param, val) {
+                if (param === 'x1') {
+                    this.x1 = parseFloat(val);
+                    if (this.x1 >= this.x2) this.x2 = this.x1 + 0.2;
+                } else {
+                    this.x2 = parseFloat(val);
+                    if (this.x2 <= this.x1) this.x1 = this.x2 - 0.2;
+                }
+                document.getElementById('slider-m2-x1').value = this.x1;
+                document.getElementById('slider-m2-x2').value = this.x2;
+                document.getElementById('val-m2-x1').innerText = this.x1.toFixed(2);
+                document.getElementById('val-m2-x2').innerText = this.x2.toFixed(2);
+
+                this.updateDiagnostics();
+                this.draw();
+            },
+            updateDiagnostics() {
+                const y1 = this.evalFn(this.x1);
+                const y2 = this.evalFn(this.x2);
+                document.getElementById('m2-fx1').innerText = y1.toFixed(3);
+                document.getElementById('m2-fx2').innerText = y2.toFixed(3);
+
+                const badge = document.getElementById('m2-diag-badge');
+                if (Math.abs(y2 - y1) < 0.02) {
+                    badge.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900";
+                    badge.innerText = "Tramo Constante: f(x₁) = f(x₂)";
+                } else if (y1 < y2) {
+                    badge.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800";
+                    badge.innerText = "Estrictamente Creciente: f(x₁) < f(x₂)";
+                } else {
+                    badge.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800";
+                    badge.innerText = "Estrictamente Decreciente: f(x₁) > f(x₂)";
+                }
+            },
+            draw() {
+                if (!this.ctx) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                this.ctx.clearRect(0, 0, w, h);
+                this.ctx.fillStyle = '#0f172a';
+                this.ctx.fillRect(0, 0, w, h);
+
+                const xMin = -3.5, xMax = 3.5, yMin = -5, yMax = 5;
+                const { toScreenX, toScreenY } = drawAxesAndGrid(this.ctx, w, h, xMin, xMax, yMin, yMax, { stepX: 1, stepY: 1 });
+
+                // Trazar con ramas coloreadas según monotonía (verde/rojo/ámbar)
+                for (let px = 0; px < w; px += 2) {
+                    const xa = xMin + (px / w) * (xMax - xMin);
+                    const xb = xMin + ((px + 2) / w) * (xMax - xMin);
+                    const ya = this.evalFn(xa);
+                    const yb = this.evalFn(xb);
+                    const d = this.evalDeriv((xa + xb) / 2);
+
+                    if (Math.abs(d) < 0.02) this.ctx.strokeStyle = '#f59e0b'; // Constante
+                    else if (d > 0) this.ctx.strokeStyle = '#10b981'; // Creciente
+                    else this.ctx.strokeStyle = '#f43f5e'; // Decreciente
+
+                    this.ctx.lineWidth = 2.8;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(toScreenX(xa), toScreenY(ya));
+                    this.ctx.lineTo(toScreenX(xb), toScreenY(yb));
+                    this.ctx.stroke();
+                }
+
+                // Dibujar puntos de prueba móviles x1 y x2
+                const y1 = this.evalFn(this.x1);
+                const y2 = this.evalFn(this.x2);
+                const sx1 = toScreenX(this.x1);
+                const sy1 = toScreenY(y1);
+                const sx2 = toScreenX(this.x2);
+                const sy2 = toScreenY(y2);
+
+                // Proyecciones punteadas
+                this.ctx.setLineDash([3, 3]);
+                this.ctx.lineWidth = 1.2;
+
+                this.ctx.strokeStyle = '#38bdf8';
+                this.ctx.beginPath();
+                this.ctx.moveTo(sx1, toScreenY(0)); this.ctx.lineTo(sx1, sy1);
+                this.ctx.stroke();
+
+                this.ctx.strokeStyle = '#c084fc';
+                this.ctx.beginPath();
+                this.ctx.moveTo(sx2, toScreenY(0)); this.ctx.lineTo(sx2, sy2);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+
+                // Marcador x1
+                this.ctx.fillStyle = '#38bdf8';
+                this.ctx.beginPath();
+                this.ctx.arc(sx1, sy1, 5.5, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.lineWidth = 1.5;
+                this.ctx.stroke();
+
+                // Marcador x2
+                this.ctx.fillStyle = '#c084fc';
+                this.ctx.beginPath();
+                this.ctx.arc(sx2, sy2, 5.5, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.stroke();
+            }
+        };
+
+        // ================= MÓDULO 3: PUNTOS EXTREMOS =================
+        const Module3 = {
+            canvas: null,
+            ctx: null,
+            model: 1,
+            xc: 0.0,
+            init() {
+                this.canvas = document.getElementById('canvas-m3');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            },
+            resizeCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * (window.devicePixelRatio || 1);
+                this.canvas.height = rect.height * (window.devicePixelRatio || 1);
+                this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+                this.draw();
+            },
+            resizeAndDraw() { this.resizeCanvas(); },
+            selectModel(m) {
+                this.model = m;
+                ['m1', 'm2', 'm3'].forEach((k, idx) => {
+                    document.getElementById(`btn-m3-${k}`).className = (idx + 1) === m ? "py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition" : "py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition";
+                });
+
+                const fEl = document.getElementById('m3-formula');
+                const listEl = document.getElementById('m3-extrema-list');
+                const absEl = document.getElementById('m3-abs-explanation');
+
+                if (m === 1) {
+                    fEl.innerHTML = "$$f(x) = x^3 - 3x^2 + 2$$";
+                    listEl.innerHTML = `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50 border border-amber-200"><span class="font-bold text-amber-800">Máximo Local (Relativo):</span><span class="font-mono font-bold text-amber-900">(0.00, 2.00)</span></div>
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200"><span class="font-bold text-emerald-800">Mínimo Local (Relativo):</span><span class="font-mono font-bold text-emerald-900">(2.00, -2.00)</span></div>
+                    `;
+                    absEl.innerHTML = "No posee extremos absolutos globales en $\\mathbb{R}$ pues la función crece y decrece indefinidamente al infinito.";
+                    this.xc = 0.0;
+                } else if (m === 2) {
+                    fEl.innerHTML = "$$f(x) = x^4 - 2x^2$$";
+                    listEl.innerHTML = `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200"><span class="font-bold text-emerald-800">Mínimos Absolutos:</span><span class="font-mono font-bold text-emerald-900">(-1.00, -1.00) y (1.00, -1.00)</span></div>
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50 border border-amber-200"><span class="font-bold text-amber-800">Máximo Local:</span><span class="font-mono font-bold text-amber-900">(0.00, 0.00)</span></div>
+                    `;
+                    absEl.innerHTML = "El valor $-1$ es el <strong>mínimo absoluto global</strong> de todo el dominio, donde $\\text{Im}(f) = [-1, +\\infty)$.";
+                    this.xc = -1.0;
+                } else {
+                    fEl.innerHTML = "$$f(x) = -x^2 + 4x + 1$$";
+                    listEl.innerHTML = `
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50 border border-amber-200"><span class="font-bold text-amber-800">Máximo Absoluto (Vértice):</span><span class="font-mono font-bold text-amber-900">(2.00, 5.00)</span></div>
+                    `;
+                    absEl.innerHTML = "El vértice $(2, 5)$ constituye el <strong>máximo absoluto</strong>; la imagen total es $(-\\infty, 5]$.";
+                    this.xc = 2.0;
+                }
+
+                document.getElementById('slider-m3-xc').value = this.xc;
+                document.getElementById('val-m3-xc').innerText = this.xc.toFixed(2);
+                renderKaTeX();
+                this.draw();
+            },
+            updateCenter(val) {
+                this.xc = parseFloat(val);
+                document.getElementById('val-m3-xc').innerText = this.xc.toFixed(2);
+                this.draw();
+            },
+            evalFn(x) {
+                if (this.model === 1) return x * x * x - 3 * x * x + 2;
+                if (this.model === 2) return Math.pow(x, 4) - 2 * x * x;
+                return -x * x + 4 * x + 1;
+            },
+            getExtrema() {
+                if (this.model === 1) return [{x: 0, y: 2, type: 'max'}, {x: 2, y: -2, type: 'min'}];
+                if (this.model === 2) return [{x: -1, y: -1, type: 'min'}, {x: 0, y: 0, type: 'max'}, {x: 1, y: -1, type: 'min'}];
+                return [{x: 2, y: 5, type: 'max'}];
+            },
+            draw() {
+                if (!this.ctx) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                this.ctx.clearRect(0, 0, w, h);
+                this.ctx.fillStyle = '#0f172a';
+                this.ctx.fillRect(0, 0, w, h);
+
+                const xMin = -3.5, xMax = 4.5, yMin = -4, yMax = 7;
+                const { toScreenX, toScreenY } = drawAxesAndGrid(this.ctx, w, h, xMin, xMax, yMin, yMax, { stepX: 1, stepY: 1 });
+
+                // Entorno móvil sombreado en el dominio I = [xc - 0.7, xc + 0.7]
+                const delta = 0.7;
+                const sxA = toScreenX(this.xc - delta);
+                const sxB = toScreenX(this.xc + delta);
+                this.ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+                this.ctx.fillRect(sxA, 0, sxB - sxA, h);
+
+                // Trazar Curva
+                this.ctx.strokeStyle = '#38bdf8';
+                this.ctx.lineWidth = 2.8;
+                this.ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= w; px += 2) {
+                    const x = xMin + (px / w) * (xMax - xMin);
+                    const y = this.evalFn(x);
+                    if (isNaN(y) || y < yMin - 2 || y > yMax + 2) { first = true; continue; }
+                    const py = toScreenY(y);
+                    if (first) { this.ctx.moveTo(px, py); first = false; }
+                    else { this.ctx.lineTo(px, py); }
+                }
+                this.ctx.stroke();
+
+                // Dibujar Puntos Extremos con Rectas Tangentes Horizontales m = 0
+                const pts = this.getExtrema();
+                pts.forEach(p => {
+                    const px = toScreenX(p.x);
+                    const py = toScreenY(p.y);
+
+                    // Tangente horizontal discontinua
+                    this.ctx.strokeStyle = '#94a3b8';
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.setLineDash([4, 4]);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(px - 35, py);
+                    this.ctx.lineTo(px + 35, py);
+                    this.ctx.stroke();
+                    this.ctx.setLineDash([]);
+
+                    // Círculo del Extremo
+                    this.ctx.fillStyle = p.type === 'max' ? '#f59e0b' : '#10b981';
+                    this.ctx.beginPath();
+                    this.ctx.arc(px, py, 6, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#ffffff';
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.stroke();
+                });
+            }
+        };
+
+        // ================= MÓDULO 4: MODELADO BIOLÓGICO =================
+        const Module4 = {
+            canvas: null,
+            ctx: null,
+            caseId: 1,
+            timeVal: 12.0,
+            init() {
+                this.canvas = document.getElementById('canvas-m4');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            },
+            resizeCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width * (window.devicePixelRatio || 1);
+                this.canvas.height = rect.height * (window.devicePixelRatio || 1);
+                this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+                this.draw();
+            },
+            resizeAndDraw() { this.resizeCanvas(); },
+            setCase(c) {
+                this.caseId = c;
+                document.getElementById('btn-m4-c1').className = c === 1 ? "py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition" : "py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition";
+                document.getElementById('btn-m4-c2').className = c === 2 ? "py-1.5 px-3 text-xs font-bold rounded-lg bg-accent text-white shadow-sm transition" : "py-1.5 px-3 text-xs font-semibold rounded-lg text-gray-700 hover:bg-gray-200 transition";
+
+                const cTitle = document.getElementById('m4-case-title');
+                const uBadge = document.getElementById('m4-unit-badge');
+                const fEl = document.getElementById('m4-formula');
+                const tLabel = document.getElementById('m4-time-label');
+                const sEl = document.getElementById('slider-m4-t');
+                const gTitle = document.getElementById('m4-graph-title');
+                const fText = document.getElementById('m4-footer-text');
+                const fStatus = document.getElementById('m4-footer-status');
+
+                if (c === 1) {
+                    cTitle.innerText = "Ciclo Circadiano de Presión Arterial";
+                    uBadge.innerText = "mmHg vs Horas";
+                    fEl.innerHTML = "$$P(t) = 120 + 25\\sin\\left(\\frac{\\pi(t - 6)}{12}\\right)$$";
+                    tLabel.innerText = "Hora del Día Evaluada (t en horas):";
+                    sEl.min = 0; sEl.max = 24; sEl.step = 0.5; sEl.value = 12;
+                    this.timeVal = 12.0;
+                    gTitle.innerText = "Curva de Presión Arterial Sistólica vs Tiempo (24h)";
+                    fText.innerText = "El ritmo circadiano de la presión arterial exhibe un patrón normal de descenso nocturno (dipper). Su pérdida constituye un marcador temprano de riesgo de accidente cerebrovascular.";
+                    fStatus.innerText = "Eje x: Tiempo (h) | Eje y: Presión Sistólica (mmHg)";
+                } else {
+                    cTitle.innerText = "Cinemática de Traslado de Urgencia";
+                    uBadge.innerText = "Kilómetros vs Horas";
+                    fEl.innerHTML = "$$D(t) = 5t^2 - 40t + 80$$";
+                    tLabel.innerText = "Tiempo Transcurrido de Ambulancia (t en horas):";
+                    sEl.min = 0; sEl.max = 4; sEl.step = 0.1; sEl.value = 2;
+                    this.timeVal = 2.0;
+                    gTitle.innerText = "Distancia Restante hacia el Hospital de Agudos";
+                    fText.innerText = "La distancia decrece monótonamente hasta que D(t) = 0, instante donde la ambulancia hace contacto con la guardia médica de emergencias.";
+                    fStatus.innerText = "Eje x: Tiempo de Traslado (h) | Eje y: Distancia Restante (km)";
+                }
+
+                document.getElementById('val-m4-t').innerText = this.timeVal.toFixed(1);
+                this.updateDiagnostics();
+                renderKaTeX();
+                this.draw();
+            },
+            updateTime(val) {
+                this.timeVal = parseFloat(val);
+                document.getElementById('val-m4-t').innerText = this.timeVal.toFixed(1);
+                this.updateDiagnostics();
+                this.draw();
+            },
+            evalFn(t) {
+                if (this.caseId === 1) {
+                    return 120 + 25 * Math.sin((Math.PI * (t - 6)) / 12);
+                } else {
+                    // D(t) = 5t^2 - 40t + 80 (corte en t=4 h)
+                    return Math.max(0, 5 * t * t - 40 * t + 80);
+                }
+            },
+            updateDiagnostics() {
+                const y = this.evalFn(this.timeVal);
+                const vName = document.getElementById('m4-var-name');
+                const vVal = document.getElementById('m4-var-val');
+                const cStat = document.getElementById('m4-clinical-status');
+                const feat = document.getElementById('m4-features');
+
+                if (this.caseId === 1) {
+                    vName.innerText = "Presión Sistólica en t:";
+                    vVal.innerText = `${y.toFixed(1)} mmHg`;
+                    if (y >= 140) {
+                        cStat.className = "p-2 rounded-lg bg-rose-50 text-rose-800 font-semibold text-[11px]";
+                        cStat.innerText = "Hipertensión Sistólica Aislada (> 140 mmHg) - Pico Matutino / Diurno.";
+                    } else if (y <= 100) {
+                        cStat.className = "p-2 rounded-lg bg-blue-50 text-blue-800 font-semibold text-[11px]";
+                        cStat.innerText = "Hipotensión Fisiológica Nocturna (Nadir circadiano de sueño).";
+                    } else {
+                        cStat.className = "p-2 rounded-lg bg-emerald-50 text-emerald-800 font-semibold text-[11px]";
+                        cStat.innerText = "Normotensión Terapéutica Adecuada (110 - 130 mmHg).";
+                    }
+                    feat.innerHTML = "<div>• Valor Máximo (Cima): 145.0 mmHg (a las 12:00 h)</div><div>• Valor Mínimo (Nadir): 95.0 mmHg (a las 00:00 h)</div>";
+                } else {
+                    vName.innerText = "Distancia Restante:";
+                    vVal.innerText = `${y.toFixed(1)} km`;
+                    if (y <= 0.05) {
+                        cStat.className = "p-2 rounded-lg bg-emerald-50 text-emerald-800 font-semibold text-[11px]";
+                        cStat.innerText = "¡Llegada a Centro Sanitario! Distancia = 0 km (Atención Inmediata).";
+                    } else {
+                        cStat.className = "p-2 rounded-lg bg-amber-50 text-amber-800 font-semibold text-[11px]";
+                        cStat.innerText = "Unidad en Código Rojo: Descenso monótono de distancia.";
+                    }
+                    feat.innerHTML = "<div>• Distancia Inicial en t=0: 80.0 km</div><div>• Instante de Arribo a Hospital: t = 4.0 h (Raíz D(t) = 0)</div>";
+                }
+            },
+            draw() {
+                if (!this.ctx) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const w = rect.width;
+                const h = rect.height;
+                this.ctx.clearRect(0, 0, w, h);
+                this.ctx.fillStyle = '#0f172a';
+                this.ctx.fillRect(0, 0, w, h);
+
+                let xMin = 0, xMax = 24, yMin = 80, yMax = 160, stepX = 2, stepY = 10;
+                if (this.caseId === 2) {
+                    xMin = 0; xMax = 4.5; yMin = 0; yMax = 90; stepX = 0.5; stepY = 15;
+                }
+
+                const { toScreenX, toScreenY } = drawAxesAndGrid(this.ctx, w, h, xMin, xMax, yMin, yMax, { stepX, stepY });
+
+                // Trazar curva de evolución
+                this.ctx.strokeStyle = '#38bdf8';
+                this.ctx.lineWidth = 2.8;
+                this.ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= w; px += 2) {
+                    const t = xMin + (px / w) * (xMax - xMin);
+                    const y = this.evalFn(t);
+                    const py = toScreenY(y);
+                    if (first) { this.ctx.moveTo(px, py); first = false; }
+                    else { this.ctx.lineTo(px, py); }
+                }
+                this.ctx.stroke();
+
+                // Marcar punto dinámico actual en timeVal
+                const yt = this.evalFn(this.timeVal);
+                const sxt = toScreenX(this.timeVal);
+                const syt = toScreenY(yt);
+
+                // Proyecciones a los ejes
+                this.ctx.strokeStyle = '#a855f7';
+                this.ctx.lineWidth = 1.5;
+                this.ctx.setLineDash([3, 3]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(sxt, toScreenY(yMin));
+                this.ctx.lineTo(sxt, syt);
+                this.ctx.lineTo(toScreenX(xMin), syt);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+
+                // Marcador resaltado
+                this.ctx.fillStyle = '#a855f7';
+                this.ctx.beginPath();
+                this.ctx.arc(sxt, syt, 6, 0, 2 * Math.PI);
+                this.ctx.fill();
+                this.ctx.strokeStyle = '#ffffff';
+                this.ctx.lineWidth = 1.5;
+                this.ctx.stroke();
+            }
+        };
+
+        // Inicialización Integral al Cargar
+        window.addEventListener('DOMContentLoaded', () => {
+            Module1.init();
+            Module2.init();
+            Module3.init();
+            Module4.init();
+
+            Module1.updateFormula();
+            Module2.updatePoints('x1', -1.5);
+            Module3.selectModel(1);
+            Module4.setCase(1);
+
+            switchModule(1);
+            renderKaTeX();
+        });
+    </script>
+</body>
+</html>
